@@ -1,0 +1,9 @@
+model = LinearRegression()
+
+Training
+------------------------------
+Train RMSE: 0.0414
+
+Validation
+------------------------------
+Val RMSE: 0.0417
