@@ -6,3 +6,4 @@ optuna_data
 src/t.py
 .idea
 eda/.ipynb_checkpoints
+.env
