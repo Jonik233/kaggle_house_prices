@@ -4,3 +4,5 @@ data
 optuna_data
 .DS_Store
 src/t.py
+.idea
+eda/.ipynb_checkpoints
