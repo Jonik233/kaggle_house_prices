@@ -63,16 +63,17 @@ def train(plot=False, mlflow_tracking=False) -> None:
     # Running mlflow tracking in case mlflow tracking is True
     if mlflow_tracking:
         tags = {
-            "Model": "TestModel",
-            "DataVersion": "TestData",
+            "Model": "LinearRegression",
+            "DatasetVersion": "V1",
+            "PreprocessVersion": "V1"
         }
         run_mlflow_tracking(
             model=model,
-            model_name="TestModel",
+            model_name=tags["Model"],
             inputs=train_inputs,
             tracking_uri=env_config["MLFLOW_RUNS_PATH"],
-            experiment_name="TestModel",
-            run_name=tags["DataVersion"],
+            experiment_name=tags["Model"],
+            run_name=f"Run: Data {tags['DatasetVersion']}, Preprocess {tags['PreprocessVersion']}",
             tags=tags,
             train_metrics=train_metrics,
             val_metrics=val_metrics,
