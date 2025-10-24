@@ -5,12 +5,11 @@ import pandas as pd
 from pathlib import Path
 from dotenv import dotenv_values
 
-# from mlflow_tracking import run_mlflow_tracking
-
 from scores import get_scores
 from config import ENV_FILE_PATH
 from preprocessing import preprocess_data
 from plotting_utils import plot_learning_curves
+from mlflow_utils import run_mlflow_tracking
 
 from sklearn.linear_model import LinearRegression
 
@@ -62,24 +61,24 @@ def train(plot=False, mlflow_tracking=False) -> None:
     joblib.dump(model, env_config["MODEL_DUMP_PATH"])
 
     # Running mlflow tracking in case mlflow tracking is True
-    # if mlflow_tracking:
-    #     tags = {
-    #         "Model": "XGBClassifier",
-    #         "Branch": "dev2",
-    #     }
-    #     run_mlflow_tracking(
-    #         model=model,
-    #         model_name=tags["Model"],
-    #         inputs=train_inputs,
-    #         tracking_uri=env_config["MLFLOW_RUNS_PATH"],
-    #         experiment_name="Preprocessing V2",
-    #         run_name=tags["Model"] + " V2",
-    #         tags=tags,
-    #         train_metrics=train_metrics,
-    #         val_metrics=val_metrics,
-    #         plot_path="plot.png",
-    #     )
+    if mlflow_tracking:
+        tags = {
+            "Model": "TestModel",
+            "DataVersion": "TestData",
+        }
+        run_mlflow_tracking(
+            model=model,
+            model_name="TestModel",
+            inputs=train_inputs,
+            tracking_uri=env_config["MLFLOW_RUNS_PATH"],
+            experiment_name="TestModel",
+            run_name=tags["DataVersion"],
+            tags=tags,
+            train_metrics=train_metrics,
+            val_metrics=val_metrics,
+            plot_path="plot.png"
+        )
 
 
 if __name__ == "__main__":
-    train(plot=True, mlflow_tracking=False)
+    train(plot=True, mlflow_tracking=True)
