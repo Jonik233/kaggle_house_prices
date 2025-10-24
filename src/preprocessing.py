@@ -149,8 +149,7 @@ def scale(df: pd.DataFrame) -> pd.DataFrame:
         joblib.dump(scaler, scaler_path)
 
     # Applying scaling
-    df[TARGET] = np.log(df[TARGET] + 1) / np.log(100)
-    df[LOG_SCALE_COLS] = np.log(df[LOG_SCALE_COLS] + 1) / np.log(100)
+    df[LOG_SCALE_COLS] = np.log1p(df[LOG_SCALE_COLS])
     df[STANDARD_SCALE_COLS] = scaler.transform(df[STANDARD_SCALE_COLS])
     return df
 
@@ -183,6 +182,12 @@ def preprocess_data(
     :return: np.ndarray
     """
 
+    labels = None
+
+    if split:
+        labels = df[[TARGET]].values.ravel().astype(np.float32)
+        labels = np.log1p(labels)
+
     # Filling nan values using numerical and categorical imputers
     df = fill_na(df)
 
@@ -198,11 +203,9 @@ def preprocess_data(
     # Dropping redundant columns
     df = drop(df)
 
-    # Splitting DataFrame into numpy arrays of inputs and labels if split is True
-    if split:
-        labels = df[[TARGET]].values.ravel().astype(np.float32)
-        inputs = df.drop(columns=[TARGET]).values.astype(np.float32)
-        return inputs, labels
-
     inputs = df.values.astype(np.float32)
-    return inputs
+
+    if split:
+        return inputs, labels
+    else:
+        return inputs
