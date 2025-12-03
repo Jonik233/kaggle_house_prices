@@ -8,3 +8,5 @@ src/__pycache__
 .idea
 eda/.ipynb_checkpoints
 .env
+output.html
+submission.csv

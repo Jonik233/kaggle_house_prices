@@ -1,17 +1,23 @@
-####### Dataset Version: V1 #######
+################### DatasetVersion: V1 ###################
 
+
+# Path to env file with dir keys
 ENV_FILE_PATH = ".env"
 
+# Label of a target variable
 TARGET = "SalePrice"
 
-LOG_SCALE_COLS = ["1stFlrSF", "GrLivArea"]
+# Columns that will be scaled using log1p
+LOG_SCALE_COLUMNS = ["1stFlrSF", "GrLivArea"]
 
-STANDARD_SCALE_COLS = ["YearBuilt", "YearRemodAdd", "LowQualFinSF",  "2ndFlrSF", "1stFlrSF", "GrLivArea"]
+# Columns that will be scaled using StandardScaler
+STANDARD_SCALE_COLUMNS = ["YearBuilt", "YearRemodAdd", "LowQualFinSF",  "2ndFlrSF", "1stFlrSF", "GrLivArea"]
 
-COLS_TO_USE = ["YearBuilt", "YearRemodAdd", "1stFlrSF", "2ndFlrSF", "LowQualFinSF", "GrLivArea"]
+# All Columns that will be used during training
+COLUMNS_TO_USE = ["YearBuilt", "YearRemodAdd", "1stFlrSF", "2ndFlrSF", "LowQualFinSF", "GrLivArea"]
 
-NUMERICAL_COLS_TO_FILL = []
+NUMERICAL_COLUMNS_TO_FILL = []
 
-CATEGORICAL_COLS_TO_FILL = []
+CATEGORICAL_COLUMNS_TO_FILL = []
 
-COLS_TO_ENCODE = []
+COLUMNS_TO_ENCODE = []

@@ -73,7 +73,7 @@ def train(plot=False, mlflow_tracking=False) -> None:
             inputs=train_inputs,
             tracking_uri=env_config["MLFLOW_RUNS_PATH"],
             experiment_name=tags["Model"],
-            run_name=f"Run: Data {tags['DatasetVersion']}, Preprocess {tags['PreprocessVersion']}",
+            run_name=f"Run: DatasetVersion {tags['DatasetVersion']}, Preprocessing {tags['PreprocessVersion']}",
             tags=tags,
             train_metrics=train_metrics,
             val_metrics=val_metrics,

@@ -10,18 +10,21 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 from config import (
     TARGET,
-    LOG_SCALE_COLS,
-    STANDARD_SCALE_COLS,
+    LOG_SCALE_COLUMNS,
+    STANDARD_SCALE_COLUMNS,
     ENV_FILE_PATH,
-    COLS_TO_USE,
-    COLS_TO_ENCODE,
-    NUMERICAL_COLS_TO_FILL,
-    CATEGORICAL_COLS_TO_FILL
+    COLUMNS_TO_USE,
+    COLUMNS_TO_ENCODE,
+    NUMERICAL_COLUMNS_TO_FILL,
+    CATEGORICAL_COLUMNS_TO_FILL
 )
 
 np.random.seed(42)
 
 ########## Preprocessing Version: V1 ##########
+
+################### PreprocessingVersion: V1 ###################
+
 
 def fill_na(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -130,6 +133,9 @@ def scale(df: pd.DataFrame) -> pd.DataFrame:
     :return: pandas.DataFrame
     """
 
+    # Applying log-scaling
+    df[LOG_SCALE_COLUMNS] = np.log1p(df[LOG_SCALE_COLUMNS])
+
     # Loading env config and scaler path
     env_config = dotenv_values(ENV_FILE_PATH)
     scaler_path = Path(env_config["SCALER_DUMP_PATH"])
@@ -143,15 +149,14 @@ def scale(df: pd.DataFrame) -> pd.DataFrame:
 
         # Creating new scaler
         scaler = StandardScaler()
-        scaler.fit(df[STANDARD_SCALE_COLS])
+        scaler.fit(df[STANDARD_SCALE_COLUMNS])
 
         # Loading new scaler into the dump
         print("Loading scaler into the dump...")
         joblib.dump(scaler, scaler_path)
 
-    # Applying scaling
-    df[LOG_SCALE_COLS] = np.log1p(df[LOG_SCALE_COLS])
-    df[STANDARD_SCALE_COLS] = scaler.transform(df[STANDARD_SCALE_COLS])
+    # Applying standard scaling
+    df[STANDARD_SCALE_COLUMNS] = scaler.transform(df[STANDARD_SCALE_COLUMNS])
     return df
 
 
@@ -161,7 +166,7 @@ def drop(df: pd.DataFrame) -> pd.DataFrame:
     :param df: input pandas.DataFrame
     :return: pandas.DataFrame
     """
-    data = df[COLS_TO_USE]
+    data = df[COLUMNS_TO_USE]
     return data
 
 
