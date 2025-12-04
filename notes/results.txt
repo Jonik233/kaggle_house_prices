@@ -24,3 +24,28 @@ Validation
 Val RMSE: 0.1879
 
 Public Score: 0.19322
+
+
+==========================================================================================================
+
+
+    model = RandomForestRegressor(n_estimators=87,
+                                  criterion="poisson",
+                                  min_samples_split=19,
+                                  min_samples_leaf=2,
+                                  max_features=0.6,
+                                  max_leaf_nodes=38,
+                                  max_samples=0.8,
+                                  max_depth=8,
+                                  n_jobs=-1,
+                                  random_state=42)
+
+Training
+------------------------------
+Train RMSE: 0.1529
+
+Validation
+------------------------------
+Val RMSE: 0.1802
+
+Public Score: 0.18659
