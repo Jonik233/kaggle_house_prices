@@ -1,12 +1,26 @@
-model = LinearRegression()
+estimator = DecisionTreeRegressor(max_depth=5,
+                                      criterion="poisson",
+                                      splitter="best",
+                                      min_samples_split=10,
+                                      min_samples_leaf=16,
+                                      max_features=None,
+                                      max_leaf_nodes=50,
+                                      random_state=42)
+
+model = BaggingRegressor(estimator=estimator,
+                         n_estimators=224,
+                         max_samples=1.0,
+                         max_features=0.9,
+                         bootstrap=True,
+                         random_state=42)
+
 
 Training
 ------------------------------
-Train RMSE: 0.1906
+Train RMSE: 0.1729
 
 Validation
 ------------------------------
-Val RMSE: 0.1918
+Val RMSE: 0.1879
 
-Public score: 0.20084
-
+Public Score: 0.19322
