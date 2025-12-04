@@ -49,3 +49,27 @@ Validation
 Val RMSE: 0.1802
 
 Public Score: 0.18659
+
+
+
+==========================================================================================================
+
+
+estimator = DecisionTreeRegressor(max_depth=6,
+                                  random_state=42)
+
+model = AdaBoostRegressor(estimator=estimator,
+                          n_estimators=92,
+                          learning_rate=0.1,
+                          loss="exponential",
+                          random_state=42)
+
+Training
+------------------------------
+Train RMSE: 0.1291
+
+Validation
+------------------------------
+Val RMSE: 0.1832
+
+Public Score: 0.18872
