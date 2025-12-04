@@ -10,7 +10,8 @@ import matplotlib.pyplot as plt
 from preprocessing import preprocess_data
 from optuna.visualization.matplotlib import plot_param_importances
 
-from sklearn.svm import LinearSVR
+from sklearn.ensemble import BaggingRegressor
+from sklearn.linear_model import LinearRegression
 
 np.random.seed(42)
 
@@ -18,9 +19,10 @@ np.random.seed(42)
 def ml_objective(trial, trial_inputs, trial_labels):
 
     param_grid = {
-        "epsilon": trial.suggest_float("epsilon", 0, 2, step=0.01),
-        "C": trial.suggest_float("C", 0.1, 10, step=0.1),
-        "loss": trial.suggest_categorical("loss", ['epsilon_insensitive', 'squared_epsilon_insensitive'])
+        "n_estimators": trial.suggest_int("n_estimators", 1, 300, step=1),
+        "max_samples": trial.suggest_float("max_samples", 0.1, 1, step=0.1),
+        "max_features": trial.suggest_float("max_features", 0.1, 1, step=0.1),
+        "bootstrap_features": trial.suggest_categorical("bootstrap_features", [True, False])
     }
 
     cv = KFold(n_splits=5, shuffle=True, random_state=42)
@@ -30,7 +32,11 @@ def ml_objective(trial, trial_inputs, trial_labels):
         train_inputs, test_inputs = trial_inputs[train_idx], trial_inputs[test_idx]
         train_labels, test_labels = trial_labels[train_idx], trial_labels[test_idx]
 
-        model = LinearSVR(**param_grid, random_state=42)
+        estimator = LinearRegression()
+        model = BaggingRegressor(**param_grid,
+                                 estimator=estimator,
+                                 bootstrap=True,
+                                 random_state=42)
 
         model.fit(train_inputs, train_labels)
         preds = model.predict(test_inputs)
