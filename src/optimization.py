@@ -10,21 +10,18 @@ import matplotlib.pyplot as plt
 from preprocessing import preprocess_data
 from optuna.visualization.matplotlib import plot_param_importances
 
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import AdaBoostRegressor
 
 np.random.seed(42)
 
 
 def ml_objective(trial, trial_inputs, trial_labels):
 
-    param_grid = {
-        "n_estimators": trial.suggest_int("n_estimators", 1, 100, step=1),
-        "criterion": trial.suggest_categorical("criterion", ["squared_error", "absolute_error", "friedman_mse", "poisson"]),
-        "min_samples_split": trial.suggest_int("min_samples_split", 2, 20, step=1),
-        "min_samples_leaf": trial.suggest_int("min_samples_leaf", 2, 20, step=1),
-        "max_features": trial.suggest_categorical("max_features", ["sqrt", "log2", None, 0.3, 0.5, 0.6, 0.8]),
-        "max_leaf_nodes": trial.suggest_int("max_leaf_nodes", 2, 40, step=1),
-        "max_samples": trial.suggest_float("max_samples", 0.1, 1, step=0.1)
+    ensemble_param_grid = {
+            "n_estimators": trial.suggest_int("n_estimators", 1, 1000, step=1),
+            "learning_rate": trial.suggest_float("learning_rate", 0.1, 1, step=0.1),
+            "loss": trial.suggest_categorical("loss", ["linear", "square", "exponential"])
     }
 
     cv = KFold(n_splits=5, shuffle=True, random_state=42)
@@ -34,10 +31,10 @@ def ml_objective(trial, trial_inputs, trial_labels):
         train_inputs, test_inputs = trial_inputs[train_idx], trial_inputs[test_idx]
         train_labels, test_labels = trial_labels[train_idx], trial_labels[test_idx]
 
-        model = RandomForestRegressor(**param_grid,
-                                      max_depth = 10,
-                                      n_jobs = -1,
-                                      random_state = 42)
+        estimator = DecisionTreeRegressor(max_depth=6, random_state=42)
+        model = AdaBoostRegressor(estimator=estimator,
+                                  **ensemble_param_grid,
+                                  random_state=42)
 
         model.fit(train_inputs, train_labels)
         preds = model.predict(test_inputs)
