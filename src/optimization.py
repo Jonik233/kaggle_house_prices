@@ -10,8 +10,7 @@ import matplotlib.pyplot as plt
 from preprocessing import preprocess_data
 from optuna.visualization.matplotlib import plot_param_importances
 
-from sklearn.ensemble import BaggingRegressor
-from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
 
 np.random.seed(42)
 
@@ -19,10 +18,13 @@ np.random.seed(42)
 def ml_objective(trial, trial_inputs, trial_labels):
 
     param_grid = {
-        "n_estimators": trial.suggest_int("n_estimators", 1, 300, step=1),
-        "max_samples": trial.suggest_float("max_samples", 0.1, 1, step=0.1),
-        "max_features": trial.suggest_float("max_features", 0.1, 1, step=0.1),
-        "bootstrap_features": trial.suggest_categorical("bootstrap_features", [True, False])
+        "n_estimators": trial.suggest_int("n_estimators", 1, 100, step=1),
+        "criterion": trial.suggest_categorical("criterion", ["squared_error", "absolute_error", "friedman_mse", "poisson"]),
+        "min_samples_split": trial.suggest_int("min_samples_split", 2, 20, step=1),
+        "min_samples_leaf": trial.suggest_int("min_samples_leaf", 2, 20, step=1),
+        "max_features": trial.suggest_categorical("max_features", ["sqrt", "log2", None, 0.3, 0.5, 0.6, 0.8]),
+        "max_leaf_nodes": trial.suggest_int("max_leaf_nodes", 2, 40, step=1),
+        "max_samples": trial.suggest_float("max_samples", 0.1, 1, step=0.1)
     }
 
     cv = KFold(n_splits=5, shuffle=True, random_state=42)
@@ -32,11 +34,10 @@ def ml_objective(trial, trial_inputs, trial_labels):
         train_inputs, test_inputs = trial_inputs[train_idx], trial_inputs[test_idx]
         train_labels, test_labels = trial_labels[train_idx], trial_labels[test_idx]
 
-        estimator = LinearRegression()
-        model = BaggingRegressor(**param_grid,
-                                 estimator=estimator,
-                                 bootstrap=True,
-                                 random_state=42)
+        model = RandomForestRegressor(**param_grid,
+                                      max_depth = 10,
+                                      n_jobs = -1,
+                                      random_state = 42)
 
         model.fit(train_inputs, train_labels)
         preds = model.predict(test_inputs)
