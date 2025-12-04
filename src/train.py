@@ -11,8 +11,7 @@ from preprocessing import preprocess_data
 from plotting_utils import plot_learning_curves
 from mlflow_utils import run_mlflow_tracking
 
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.ensemble import AdaBoostRegressor
+from sklearn.ensemble import GradientBoostingRegressor
 
 np.random.seed(42)
 
@@ -34,14 +33,18 @@ def train(plot=False, mlflow_tracking=False) -> None:
     train_inputs, train_labels = preprocess_data(df=df, split=True)
 
     # Model initialization
-    estimator = DecisionTreeRegressor(max_depth=6,
+    model = GradientBoostingRegressor(max_depth=6,
+                                      n_estimators=681,
+                                      loss="huber",
+                                      learning_rate=0.011630,
+                                      subsample=0.4,
+                                      criterion="squared_error",
+                                      min_samples_split=8,
+                                      min_samples_leaf=7,
+                                      max_features=0.8,
+                                      max_leaf_nodes=15,
+                                      alpha=0.9,
                                       random_state=42)
-
-    model = AdaBoostRegressor(estimator=estimator,
-                              n_estimators=92,
-                              learning_rate=0.1,
-                              loss="exponential",
-                              random_state=42)
 
     # Fetching metrics using cross validation
     train_metrics, val_metrics = get_scores(model, train_inputs, train_labels)
@@ -71,7 +74,7 @@ def train(plot=False, mlflow_tracking=False) -> None:
     # Running mlflow tracking in case mlflow tracking is True
     if mlflow_tracking:
         tags = {
-            "Model": "AdaBoostRegressor",
+            "Model": "GradientBoostingRegressor",
             "DatasetVersion": "V1",
             "PreprocessVersion": "V1"
         }
