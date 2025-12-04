@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from preprocessing import preprocess_data
 from optuna.visualization.matplotlib import plot_param_importances
 
-from sklearn.ensemble import GradientBoostingRegressor
+from xgboost import XGBRegressor
 
 np.random.seed(42)
 
@@ -18,16 +18,16 @@ np.random.seed(42)
 def ml_objective(trial, trial_inputs, trial_labels):
 
     param_grid = {
-        "loss": trial.suggest_categorical("loss", ['squared_error', 'absolute_error', 'huber', 'quantile']),
-        "learning_rate": trial.suggest_float("learning_rate", 0.0001, 0.3, log=True),
         "n_estimators": trial.suggest_int("n_estimators", 1, 1000, step=1),
-        "subsample": trial.suggest_float("subsample", 0.1, 1, step=0.1),
-        "criterion": trial.suggest_categorical("criterion", ['friedman_mse', 'squared_error']),
-        "min_samples_split": trial.suggest_int("min_samples_split", 2, 20, step=1),
-        "min_samples_leaf": trial.suggest_int("min_samples_leaf", 2, 20, step=1),
-        "max_features": trial.suggest_categorical("max_features", ['sqrt', 'log2', 0.3, 0.5, 0.6, 0.8, None]),
-        "alpha": trial.suggest_float("alpha", 0.1, 0.9, step=0.1),
-        "max_leaf_nodes": trial.suggest_int("max_leaf_nodes", 2, 40, step=1)
+        "max_leaves": trial.suggest_int("max_leaves", 2, 80, step=1),
+        "grow_policy": trial.suggest_categorical("grow_policy", ['depthwise', 'lossguide']),
+        "learning_rate": trial.suggest_float("learning_rate", 1e-3, 1, log=True),
+        "gamma": trial.suggest_float("gamma", 1e-3, 10, log=True),
+        "min_child_weight": trial.suggest_float("min_child_weight", 1, 50, log=True),
+        "subsample": trial.suggest_float("subsample", 0.3, 1, step=0.05),
+        "colsample_bytree": trial.suggest_float("colsample_bytree", 0.3, 1, step=0.05),
+        "reg_alpha": trial.suggest_float("reg_alpha", 1e-3, 5, log=True),
+        "reg_lambda": trial.suggest_float("reg_lambda", 1e-3, 5, log=True)
     }
 
     cv = KFold(n_splits=5, shuffle=True, random_state=42)
@@ -37,7 +37,7 @@ def ml_objective(trial, trial_inputs, trial_labels):
         train_inputs, test_inputs = trial_inputs[train_idx], trial_inputs[test_idx]
         train_labels, test_labels = trial_labels[train_idx], trial_labels[test_idx]
 
-        model = GradientBoostingRegressor(**param_grid, max_depth=6, random_state=42)
+        model = XGBRegressor(**param_grid, max_depth=5, objective="reg:squarederror", random_state=42, n_jobs=-1)
 
         model.fit(train_inputs, train_labels)
         preds = model.predict(test_inputs)

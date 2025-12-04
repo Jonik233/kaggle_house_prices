@@ -11,7 +11,7 @@ from preprocessing import preprocess_data
 from plotting_utils import plot_learning_curves
 from mlflow_utils import run_mlflow_tracking
 
-from sklearn.ensemble import GradientBoostingRegressor
+from xgboost import XGBRegressor
 
 np.random.seed(42)
 
@@ -33,18 +33,22 @@ def train(plot=False, mlflow_tracking=False) -> None:
     train_inputs, train_labels = preprocess_data(df=df, split=True)
 
     # Model initialization
-    model = GradientBoostingRegressor(max_depth=6,
-                                      n_estimators=681,
-                                      loss="huber",
-                                      learning_rate=0.011630,
-                                      subsample=0.4,
-                                      criterion="squared_error",
-                                      min_samples_split=8,
-                                      min_samples_leaf=7,
-                                      max_features=0.8,
-                                      max_leaf_nodes=15,
-                                      alpha=0.9,
-                                      random_state=42)
+    model = XGBRegressor(max_depth=3,
+                         n_estimators=785,
+                         max_leaves=26,
+                         grow_policy="depthwise",
+                         learning_rate=0.035548,
+                         gamma=0.018629,
+                         min_child_weight=0.014109,
+                         subsample=0.50,
+                         colsample_bytree=0.95,
+                         colsample_bylevel=0.85,
+                         colsample_bynode=0.55,
+                         reg_alpha=1.167300,
+                         reg_lambda=3.192301,
+                         objective="reg:squarederror",
+                         random_state=42,
+                         n_jobs=-1)
 
     # Fetching metrics using cross validation
     train_metrics, val_metrics = get_scores(model, train_inputs, train_labels)
@@ -74,7 +78,7 @@ def train(plot=False, mlflow_tracking=False) -> None:
     # Running mlflow tracking in case mlflow tracking is True
     if mlflow_tracking:
         tags = {
-            "Model": "GradientBoostingRegressor",
+            "Model": "XGBRegressor",
             "DatasetVersion": "V1",
             "PreprocessVersion": "V1"
         }
