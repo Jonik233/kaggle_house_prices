@@ -15,6 +15,10 @@ from config import (
     ENV_FILE_PATH,
     COLUMNS_TO_USE,
     COLUMNS_TO_ENCODE,
+    MSSubClass_CATEGORIES_TO_ENCODE,
+    BldgType_CATEGORIES_TO_ENCODE,
+    HouseStyle_CATEGORIES_TO_ENCODE,
+    Functional_CATEGORIES_TO_ENCODE,
     NUMERICAL_COLUMNS_TO_FILL,
     CATEGORICAL_COLUMNS_TO_FILL
 )
@@ -26,7 +30,7 @@ np.random.seed(42)
 ################### PreprocessingVersion: V1 ###################
 
 
-################### PreprocessingVersion: V1 ###################
+################### PreprocessingVersion: V2 ###################
 
 
 def fill_na(df: pd.DataFrame) -> pd.DataFrame:
@@ -87,45 +91,47 @@ def encode(df: pd.DataFrame) -> pd.DataFrame:
     :return: pandas.DataFrame
     """
 
-    # Encoding categorical column 'Sex'
-    # df["Sex"] = df["Sex"].map({"male": 1, "female": 0})
-    #
-    # # Load config and encoder path
-    # env_config = dotenv_values(ENV_FILE_PATH)
-    # encoder_path = Path(env_config["UNIVERSAL_ENCODER_DUMP_PATH"])
-    #
-    # if encoder_path.exists():
-    #     # Loading universal encoder
-    #     universal_encoder = joblib.load(encoder_path)
-    # else:
-    #     print(f"\nUniversal encoder not found in {encoder_path}")
-    #     print("Creating new encoder...")
-    #
-    #     # Creating new encoder
-    #     universal_encoder = OneHotEncoder(
-    #         categories=[None],
-    #         handle_unknown="ignore",
-    #         sparse_output=False,
-    #         dtype=np.int64,
-    #     )
-    #     universal_encoder.fit(df[COLS_TO_ENCODE])
-    #
-    #     # Loading new encoder into the dump
-    #     print(f"Saving to encoder to {encoder_path}")
-    #     joblib.dump(universal_encoder, encoder_path)
-    #
-    # # Applying universal encoder
-    # encoded_arr = universal_encoder.transform(df[COLS_TO_ENCODE])
-    # encoded_df = pd.DataFrame(
-    #     data=encoded_arr,
-    #     columns=universal_encoder.get_feature_names_out(COLS_TO_ENCODE),
-    #     index=df.index,
-    #     dtype=np.int64,
-    # )
-    #
-    # # Replacing unencoded columns with encoded
-    # df = df.drop(columns=COLS_TO_ENCODE)
-    # df = pd.concat([df, encoded_df], axis=1)
+    # Load config and encoder path
+    env_config = dotenv_values(ENV_FILE_PATH)
+    encoder_path = Path(env_config["ENCODER_DUMP_PATH"])
+
+    if encoder_path.exists():
+        # Loading universal encoder
+        encoder = joblib.load(encoder_path)
+    else:
+        print(f"\nEncoder not found in {encoder_path}")
+        print("Creating new encoder...")
+
+        # Creating new encoder
+        encoder = OneHotEncoder(
+            categories=[
+                MSSubClass_CATEGORIES_TO_ENCODE,
+                BldgType_CATEGORIES_TO_ENCODE,
+                HouseStyle_CATEGORIES_TO_ENCODE,
+                Functional_CATEGORIES_TO_ENCODE
+            ],
+            handle_unknown="ignore",
+            sparse_output=False,
+            dtype=np.int64,
+        )
+        encoder.fit(df[COLUMNS_TO_ENCODE])
+
+        # Loading new encoder into the dump
+        print(f"Saving to encoder to {encoder_path}")
+        joblib.dump(encoder, encoder_path)
+
+    # Applying universal encoder
+    encoded_arr = encoder.transform(df[COLUMNS_TO_ENCODE])
+    encoded_df = pd.DataFrame(
+        data=encoded_arr,
+        columns=encoder.get_feature_names_out(COLUMNS_TO_ENCODE),
+        index=df.index,
+        dtype=np.int64,
+    )
+
+    # Replacing unencoded columns with encoded
+    df = df.drop(columns=COLUMNS_TO_ENCODE)
+    df = pd.concat([df, encoded_df], axis=1)
     return df
 
 
