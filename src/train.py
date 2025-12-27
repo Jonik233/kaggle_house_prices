@@ -11,7 +11,9 @@ from preprocessing import preprocess_data
 from plotting_utils import plot_learning_curves
 from mlflow_utils import run_mlflow_tracking
 
+from sklearn.svm import SVR
 from xgboost import XGBRegressor
+from sklearn.ensemble import VotingRegressor
 
 np.random.seed(42)
 
@@ -33,22 +35,27 @@ def train(plot=False, mlflow_tracking=False) -> None:
     train_inputs, train_labels = preprocess_data(df=df, split=True)
 
     # Model initialization
-    model = XGBRegressor(max_depth=3,
-                         n_estimators=981,
-                         max_leaves=36,
-                         grow_policy="lossguide",
-                         learning_rate=0.021370,
-                         gamma=0.011646,
-                         min_child_weight=1.203000,
-                         subsample=0.30,
-                         colsample_bytree=0.65,
-                         colsample_bylevel=0.9,
-                         colsample_bynode=0.5,
-                         reg_alpha=0.066957,
-                         reg_lambda=5.423658,
-                         objective="reg:squarederror",
-                         random_state=42,
-                         n_jobs=-1)
+    xgb = XGBRegressor(max_depth=3,
+                       n_estimators=981,
+                       max_leaves=36,
+                       grow_policy="lossguide",
+                       learning_rate=0.021370,
+                       gamma=0.011646,
+                       min_child_weight=1.203000,
+                       subsample=0.30,
+                       colsample_bytree=0.65,
+                       colsample_bylevel=0.9,
+                       colsample_bynode=0.5,
+                       reg_alpha=0.066957,
+                       reg_lambda=5.423658,
+                       objective="reg:squarederror",
+                       random_state=42,
+                       n_jobs=-1)
+
+    svr = SVR(kernel="rbf", gamma="auto", C=0.519349, epsilon=0.036587)
+
+    model = VotingRegressor(estimators=[('xgb', xgb),
+                                        ('svr', svr)])
 
     # Fetching metrics using cross validation
     train_metrics, val_metrics = get_scores(model, train_inputs, train_labels)
@@ -78,7 +85,7 @@ def train(plot=False, mlflow_tracking=False) -> None:
     # Running mlflow tracking in case mlflow tracking is True
     if mlflow_tracking:
         tags = {
-            "Model": "XGBRegressor",
+            "Model": "VotingRegressor",
             "DatasetVersion": "V2",
             "PreprocessVersion": "V2"
         }
