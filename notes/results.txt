@@ -22,56 +22,6 @@ Public Score: 0.15529
 ==========================================================================================================
 
 
-estimator = DecisionTreeRegressor(max_depth=6,
-                                  random_state=42)
-
-model = AdaBoostRegressor(estimator=estimator,
-                          n_estimators=92,
-                          learning_rate=0.1,
-                          loss="exponential",
-                          random_state=42)
-
-Training
-------------------------------
-Train RMSE: 0.1291
-
-Validation
-------------------------------
-Val RMSE: 0.1832
-
-Public Score: 0.18872
-
-
-==========================================================================================================
-
-
-model = GradientBoostingRegressor(max_depth=6,
-                                  n_estimators=681,
-                                  loss="huber",
-                                  learning_rate=0.011630,
-                                  subsample=0.4,
-                                  criterion="squared_error",
-                                  min_samples_split=8,
-                                  min_samples_leaf=7,
-                                  max_features=0.8,
-                                  max_leaf_nodes=15,
-                                  alpha=0.9,
-                                  random_state=42)
-
-Training
-------------------------------
-Train RMSE: 0.1412
-
-Validation
-------------------------------
-Val RMSE: 0.1774
-
-Public Score: 0.18276
-
-
-==========================================================================================================
-
-
 model = XGBRegressor(max_depth=3,
                      n_estimators=785,
                      max_leaves=26,
@@ -98,3 +48,33 @@ Validation
 Val RMSE: 0.1789
 
 Public Score: 0.18249
+
+
+
+model = XGBRegressor(max_depth=3,
+                     n_estimators=981,
+                     max_leaves=36,
+                     grow_policy="lossguide",
+                     learning_rate=0.021370,
+                     gamma=0.011646,
+                     min_child_weight=1.203000,
+                     subsample=0.30,
+                     colsample_bytree=0.65,
+                     colsample_bylevel=0.9,
+                     colsample_bynode=0.5,
+                     reg_alpha=0.066957,
+                     reg_lambda=5.423658,
+                     objective="reg:squarederror",
+                     random_state=42,
+                     n_jobs=-1)
+
+
+Training
+------------------------------
+Train RMSE: 0.1246
+
+Validation
+------------------------------
+Val RMSE: 0.1492
+
+Public Score: 0.14746
