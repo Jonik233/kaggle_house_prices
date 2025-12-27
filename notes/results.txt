@@ -23,35 +23,6 @@ Public Score: 0.15529
 
 
 model = XGBRegressor(max_depth=3,
-                     n_estimators=785,
-                     max_leaves=26,
-                     grow_policy="depthwise",
-                     learning_rate=0.035548,
-                     gamma=0.018629,
-                     min_child_weight=0.014109,
-                     subsample=0.50,
-                     colsample_bytree=0.95,
-                     colsample_bylevel=0.85,
-                     colsample_bynode=0.55,
-                     reg_alpha=1.167300,
-                     reg_lambda=3.192301,
-                     objective="reg:squarederror",
-                     random_state=42,
-                     n_jobs=-1)
-
-Training
-------------------------------
-Train RMSE: 0.1572
-
-Validation
-------------------------------
-Val RMSE: 0.1789
-
-Public Score: 0.18249
-
-
-
-model = XGBRegressor(max_depth=3,
                      n_estimators=981,
                      max_leaves=36,
                      grow_policy="lossguide",
@@ -78,3 +49,41 @@ Validation
 Val RMSE: 0.1492
 
 Public Score: 0.14746
+
+
+==========================================================================================================
+
+
+xgb = XGBRegressor(max_depth=3,
+                 n_estimators=981,
+                 max_leaves=36,
+                 grow_policy="lossguide",
+                 learning_rate=0.021370,
+                 gamma=0.011646,
+                 min_child_weight=1.203000,
+                 subsample=0.30,
+                 colsample_bytree=0.65,
+                 colsample_bylevel=0.9,
+                 colsample_bynode=0.5,
+                 reg_alpha=0.066957,
+                 reg_lambda=5.423658,
+                 objective="reg:squarederror",
+                 random_state=42,
+                 n_jobs=-1)
+
+svr = SVR(kernel="rbf", gamma="auto", C=0.519349, epsilon=0.036587)
+
+model = VotingRegressor(estimators=[('xgb', xgb),
+                                    ('svr', svr),
+                                    ])
+
+Training
+------------------------------
+Train RMSE: 0.1261
+
+Validation
+------------------------------
+Val RMSE: 0.1486
+
+
+Public Score: 0.14360
