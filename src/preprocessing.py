@@ -19,6 +19,7 @@ from config import (
     BldgType_CATEGORIES_TO_ENCODE,
     HouseStyle_CATEGORIES_TO_ENCODE,
     Functional_CATEGORIES_TO_ENCODE,
+    KitchenQual_CATEGORIES_TO_ENCODE,
     NUMERICAL_COLUMNS_TO_FILL,
     CATEGORICAL_COLUMNS_TO_FILL
 )
@@ -30,7 +31,7 @@ np.random.seed(42)
 ################### PreprocessingVersion: V1 ###################
 
 
-################### PreprocessingVersion: V2 ###################
+################### PreprocessingVersion: V3 ###################
 
 
 def fill_na(df: pd.DataFrame) -> pd.DataFrame:
@@ -108,7 +109,8 @@ def encode(df: pd.DataFrame) -> pd.DataFrame:
                 MSSubClass_CATEGORIES_TO_ENCODE,
                 BldgType_CATEGORIES_TO_ENCODE,
                 HouseStyle_CATEGORIES_TO_ENCODE,
-                Functional_CATEGORIES_TO_ENCODE
+                Functional_CATEGORIES_TO_ENCODE,
+                KitchenQual_CATEGORIES_TO_ENCODE
             ],
             handle_unknown="ignore",
             sparse_output=False,
