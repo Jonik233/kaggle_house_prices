@@ -1,23 +1,23 @@
-model = RandomForestRegressor(n_estimators=482,
-                              criterion="poisson",
+model = RandomForestRegressor(n_estimators=782,
+                              criterion="squared_error",
                               min_samples_split=11,
-                              min_samples_leaf=2,
+                              min_samples_leaf=1,
                               max_features=0.5,
-                              max_leaf_nodes=67,
-                              max_samples=1.0,
+                              max_leaf_nodes=60,
+                              max_samples=0.9,
                               max_depth=8,
                               n_jobs=-1,
                               random_state=42)
 
 Training
 ------------------------------
-Train RMSE: 0.1183
+Train RMSE: 0.1167
 
 Validation
 ------------------------------
-Val RMSE: 0.1562
+Val RMSE: 0.1557
 
-Public Score: 0.15529
+Public Score: 0.15419
 
 ==========================================================================================================
 
