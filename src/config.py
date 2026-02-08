@@ -1,4 +1,4 @@
-####### Dataset Version: V3 #######
+####### Dataset Version: V3.1 #######
 
 
 # Path to env file with dir keys
@@ -33,16 +33,16 @@ Functional_CATEGORIES_TO_ENCODE = ["Typ"]
 KitchenQual_CATEGORIES_TO_ENCODE = ["TA", "Gd", "Ex", "Fa"]
 
 # Columns of numerical type that will be used during training
-NUMERICAL_COLUMNS_TO_USE = ["YearBuilt", "YearRemodAdd", "1stFlrSF", "2ndFlrSF", "LowQualFinSF", "GrLivArea"]
+NUMERICAL_COLUMNS_TO_USE = ["YearBuilt", "YearRemodAdd", "1stFlrSF", "2ndFlrSF", "LowQualFinSF", "GrLivArea",
+                            "BedroomAbvGr"]
 
-# "BedroomAbvGr", "KitchenAbvGr", "TotRmsAbvGrd"
 # Columns of categorical type that will be used during training
 CATEGORICAL_COLUMNS_TO_USE = ["OverallQual", "OverallCond",
                              "MSSubClass_20", "MSSubClass_50", "MSSubClass_60", "MSSubClass_120",
                              "BldgType_1Fam", "BldgType_TwnhsE",
                              "HouseStyle_1Story", "HouseStyle_2Story",
                              "Functional_Typ",
-                             "KitchenQual_TA", "KitchenQual_Gd", "KitchenQual_Ex"]
+                             "KitchenQual_TA", "KitchenQual_Gd", "KitchenQual_Ex", "KitchenQual_Fa"]
 
 # All Columns that will be used during training
 COLUMNS_TO_USE = [*NUMERICAL_COLUMNS_TO_USE, *CATEGORICAL_COLUMNS_TO_USE]
