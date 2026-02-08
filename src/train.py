@@ -11,7 +11,7 @@ from preprocessing import preprocess_data
 from plotting_utils import plot_learning_curves
 from mlflow_utils import run_mlflow_tracking
 
-from sklearn.ensemble import RandomForestRegressor
+from xgboost import XGBRegressor
 
 np.random.seed(42)
 
@@ -33,16 +33,22 @@ def train(plot=False, mlflow_tracking=False) -> None:
     train_inputs, train_labels = preprocess_data(df=df, split=True)
 
     # Model initialization
-    model = RandomForestRegressor(n_estimators=782,
-                                  criterion="squared_error",
-                                  min_samples_split=11,
-                                  min_samples_leaf=1,
-                                  max_features=0.5,
-                                  max_leaf_nodes=60,
-                                  max_samples=0.9,
-                                  max_depth=8,
-                                  n_jobs=-1,
-                                  random_state=42)
+    model = XGBRegressor(max_depth=3,
+                         n_estimators=843,
+                         max_leaves=29,
+                         grow_policy="depthwise",
+                         learning_rate=0.037127,
+                         gamma=0.000063,
+                         min_child_weight=0.037237,
+                         subsample=0.35,
+                         colsample_bytree=0.9,
+                         colsample_bylevel=0.8,
+                         colsample_bynode=0.8,
+                         reg_alpha=0.123773,
+                         reg_lambda=6.305954,
+                         objective="reg:squarederror",
+                         random_state=42,
+                         n_jobs=-1)
 
     # Fetching metrics using cross validation
     train_metrics, val_metrics = get_scores(model, train_inputs, train_labels)
@@ -72,8 +78,8 @@ def train(plot=False, mlflow_tracking=False) -> None:
     # Running mlflow tracking in case mlflow tracking is True
     if mlflow_tracking:
         tags = {
-            "Model": "RandomForestRegressor",
-            "DatasetVersion": "V3",
+            "Model": "XGBRegressor",
+            "DatasetVersion": "V3.1",
             "PreprocessVersion": "V3"
         }
         run_mlflow_tracking(
